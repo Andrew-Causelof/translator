@@ -1,4 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
+import { ProjectService } from './project.service';
 
-@Controller('project')
-export class ProjectController {}
+@Controller('projects')
+export class ProjectController {
+  constructor(private readonly projectService: ProjectService) {}
+
+  @Get()
+  async list() {
+    return this.projectService.getAll();
+  }
+
+  @Get(':slug')
+  async getBySlug(@Param('slug') slug: string) {
+    return this.projectService.findBySlug(slug);
+  }
+}
