@@ -5,7 +5,7 @@ import { TranslateModule } from './translate/translate.module';
 import { ProjectModule } from './project/project.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TranslateModule } from './translate/translate.module';
+
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { TranslateModule } from './translate/translate.module';
       useFactory: () => ({
         type: 'postgres',
         host: process.env.DB_HOST,
-        port: +process.env.DB_PORT,
+        port: +(process.env.DB_PORT || 5432),
         username: process.env.DB_USER,
         password: process.env.DB_PASS,
         database: process.env.DB_NAME,
