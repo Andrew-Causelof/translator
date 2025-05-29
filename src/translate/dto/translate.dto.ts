@@ -6,17 +6,14 @@ export class TranslateDto {
   text: string;
 
   @IsString()
-  @IsIn(['en', 'fr', 'ar'])
+  @IsNotEmpty()
   lang: string;
 
-  @IsOptional()
   @IsString()
-  key?: string;
+  @IsNotEmpty()
+  project: string;
 
-  @IsOptional()
-  context?: {
-    html?: string;
-    uri?: string;
-    project?: string;
-  };
+  @IsString()
+  @IsNotEmpty()
+  key?: string;
 }

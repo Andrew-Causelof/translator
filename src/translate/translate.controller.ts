@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { TranslateDto } from './dto/translate.dto';
 import { TranslateService } from './translate.service';
+import { TranslateDto } from './dto/translate.dto';
 
 @Controller('translate')
 export class TranslateController {
