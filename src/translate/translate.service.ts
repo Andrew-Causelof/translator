@@ -5,6 +5,7 @@ import { Translation } from './entities/translation.entity';
 import { TranslateDto } from './dto/translate.dto';
 import { ProjectService } from '../project/project.service';
 import { TranslatorManagerService } from '../translators/translator.manager';
+import { DeepseekTranslator } from '../translators/deepseek.translator';
 
 @Injectable()
 export class TranslateService {

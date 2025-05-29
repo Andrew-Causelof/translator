@@ -1,4 +1,4 @@
-import { TranslatorProvider } from './translator.interface';
+import { TranslatorProvider } from './interfaces/translator.interface';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

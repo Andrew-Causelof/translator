@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { GptTranslator } from './gpt.translator';
 import { GoogleTranslator } from './google.translator';
-import { TranslatorProvider } from './translator.interface';
+import { TranslatorProvider } from './interfaces/translator.interface';
+import { DeepseekTranslator } from '../translators/deepseek.translator';
+
 
 @Injectable()
 export class TranslatorManagerService {
@@ -10,10 +12,12 @@ export class TranslatorManagerService {
   constructor(
     private readonly gpt: GptTranslator,
     private readonly google: GoogleTranslator,
+    private readonly deepseek: DeepseekTranslator,
   ) {
     this.translators = {
       [this.gpt.name]: this.gpt,
       [this.google.name]: this.google,
+      [this.deepseek.name]: this.deepseek
     };
   }
 

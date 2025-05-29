@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TranslatorProvider } from './translator.interface';
+import { TranslatorProvider } from './interfaces/translator.interface';
 
 @Injectable()
 export class GptTranslator implements TranslatorProvider {
