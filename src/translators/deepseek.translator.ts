@@ -16,6 +16,16 @@ interface DeepseekResponse {
   }[];
 }
 
+// @TODO Возможно переделать на подсчет токенов
+const chooseModelByTextLength = function(text: string): 'deepseek-chat' | 'deepseek-reasoner' {
+  const approxTokens = Math.ceil(text.length / 3.5); // оценка
+
+  if (approxTokens > 8000) {
+    return 'deepseek-reasoner';
+  }
+  return 'deepseek-chat';
+}
+
 @Injectable()
 export class DeepseekTranslator implements TranslatorProvider {
   name = 'deepseek';
@@ -35,7 +45,7 @@ export class DeepseekTranslator implements TranslatorProvider {
       const response = await axios.post<DeepseekResponse>(
         this.endpoint,
         {
-          model: 'deepseek-chat',
+          model: chooseModelByTextLength(options.text),
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: options.context ? `${options.context}\n\n${options.text}` : options.text },
