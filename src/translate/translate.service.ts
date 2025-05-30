@@ -17,45 +17,51 @@ export class TranslateService {
   ) {}
 
   async handleTranslation(dto: TranslateDto) {
-    const { text, lang, project, key } = dto;
-
+    const { text, lang, project, key, services, context } = dto;
+  
     const projectEntity = await this.projectService.findBySlug(project);
-
+  
     if (!projectEntity || !projectEntity.active) {
       throw new NotFoundException(`Project "${project}" not found or inactive`);
     }
-
+  
     if (!projectEntity.allowedLanguages.includes(lang)) {
       throw new BadRequestException(`Language "${lang}" not allowed for this project`);
     }
-
-    // Генерация уникального ключа на основе текста и проекта (можно улучшить позже)
+  
     const generatedKey = `${project}:${key}`;
-
+  
     let translation = await this.translationRepo.findOne({
       where: { key: generatedKey, lang },
     });
-
+  
+    const fallbackOrder = services ?? projectEntity.fallbackOrder;
+  
+    if (!fallbackOrder || fallbackOrder.length === 0) {
+      throw new BadRequestException('No translator services provided or configured for project');
+    }
+  
+    const translatedText = await this.translatorManager.translateWithFallback(
+      fallbackOrder,
+      text,
+      lang,
+      context,
+    );
+  
     if (!translation) {
-      const translated = await this.translatorManager.translateWithFallback(
-        projectEntity.fallbackOrder,
-        text,
-        lang,
-      );
-
       translation = this.translationRepo.create({
         key: generatedKey,
+        translated: translatedText,
         lang,
         original: text,
-        translated,
       });
-
-      await this.translationRepo.save(translation);
+    } else {
+      translation.translated = translatedText;
+      translation.original = text;
     }
-
-    return {
-      translated: translation.translated,
-      key: translation.key,
-    };
+  
+    await this.translationRepo.save(translation);
+    return translation;
   }
+  
 }

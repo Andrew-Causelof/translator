@@ -25,13 +25,14 @@ export class TranslatorManagerService {
     services: string[],
     text: string,
     lang: string,
+    context?: string
   ): Promise<string> {
     for (const service of services) {
       const provider = this.translators[service];
       if (!provider) continue;
 
       try {
-        return await provider.translate(text, lang);
+        return await provider.translate(text, lang, context);
       } catch (error) {
         console.warn(`⚠️ ${service} failed: ${error.message}`);
       }

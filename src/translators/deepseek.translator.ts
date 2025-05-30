@@ -23,12 +23,13 @@ export class DeepseekTranslator implements TranslatorProvider {
   private readonly apiKey = process.env.DEEPSEEK_API_KEY;
   private readonly endpoint = 'https://api.deepseek.com/v1/chat/completions';
 
-  async translate(textOrOptions: string | TranslateOptions, lang?: string): Promise<string> {
+  async translate(textOrOptions: string | TranslateOptions, lang?: string, context?: string): Promise<string> {
     const options: TranslateOptions = typeof textOrOptions === 'string'
-      ? { text: textOrOptions, lang: lang || 'en' }
-      : textOrOptions;
+    ? { text: textOrOptions, lang: lang || 'en', context }
+    : textOrOptions;
 
-    const systemPrompt = `You are a professional translator. Translate the following content into ${options.lang}. Preserve HTML tags if present.`;
+    const systemPrompt = `You are a professional translator. Your task is to perform a precise and literal translation of the given text into ${lang}. Do not add explanations or paraphrasing. Preserve HTML tags and formatting exactly as provided.`;
+
 
     try {
       const response = await axios.post<DeepseekResponse>(
@@ -39,7 +40,7 @@ export class DeepseekTranslator implements TranslatorProvider {
             { role: 'system', content: systemPrompt },
             { role: 'user', content: options.context ? `${options.context}\n\n${options.text}` : options.text },
           ],
-          temperature: 0.2,
+          temperature: 0.0,
         },
         {
           headers: {

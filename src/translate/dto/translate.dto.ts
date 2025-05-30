@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsIn, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsIn, IsOptional , IsArray } from 'class-validator';
 
 export class TranslateDto {
   @IsString()
@@ -6,14 +6,23 @@ export class TranslateDto {
   text: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsIn(['en', 'cn', 'ar'])
   lang: string;
+
+  @IsNotEmpty()
+  @IsString()
+  key?: string;
 
   @IsString()
   @IsNotEmpty()
   project: string;
 
+  @IsOptional()
+  @IsArray()
+  @IsIn(['gpt', 'google', 'deepseek'], { each: true })
+  services?: string[];
+
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  key?: string;
+  context?: string;
 }
